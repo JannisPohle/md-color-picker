@@ -451,6 +451,7 @@ angular.module('mdColorPicker', [])
 				// Advanced options
 				mdColorClearButton: '=?',
 				mdColorPreview: '=?',
+				mdColorCustomPalette: '=?',
 
 				mdColorAlphaChannel: '=?',
 				mdColorSpectrum: '=?',
@@ -506,6 +507,9 @@ angular.module('mdColorPicker', [])
 				$scope.mdColorHex = $scope.mdColorHex === undefined ? true : $scope.mdColorHex;
 				$scope.mdColorRgb = $scope.mdColorRgb === undefined ? true : $scope.mdColorRgb;
 				$scope.mdColorHsl = $scope.mdColorHsl === undefined ? true : $scope.mdColorHsl;
+
+				//Custom palette is empty by default
+				$scope.mdColorCustomPalette = $scope.mdColorCustomPalette === undefined ? [] : $scope.mdColorCustomPalette;
 				// Set the starting value
 				updateValue();
 
@@ -543,6 +547,7 @@ angular.module('mdColorPicker', [])
 						hasBackdrop: $scope.hasBackdrop,
 						skipHide: $scope.skipHide,
 						preserveScope: $scope.preserveScope,
+						mdColorCustomPalette: $scope.mdColorCustomPalette,
 
 						mdColorAlphaChannel: $scope.mdColorAlphaChannel,
 						mdColorSpectrum: $scope.mdColorSpectrum,
@@ -577,6 +582,7 @@ angular.module('mdColorPicker', [])
 				value: '=?',
 				default: '@',
 				random: '@',
+				mdColorCustomPalette: '@',
 				ok: '=?',
 				mdColorAlphaChannel: '=',
 				mdColorSpectrum: '=',
@@ -655,7 +661,7 @@ angular.module('mdColorPicker', [])
 				var steps = 9;
 				var freq = 2*Math.PI/steps;
 
-				$scope.palette = [
+				var defaultPalette = [
 					["rgb(255, 204, 204)","rgb(255, 230, 204)","rgb(255, 255, 204)","rgb(204, 255, 204)","rgb(204, 255, 230)","rgb(204, 255, 255)","rgb(204, 230, 255)","rgb(204, 204, 255)","rgb(230, 204, 255)","rgb(255, 204, 255)"],
 					["rgb(255, 153, 153)","rgb(255, 204, 153)","rgb(255, 255, 153)","rgb(153, 255, 153)","rgb(153, 255, 204)","rgb(153, 255, 255)","rgb(153, 204, 255)","rgb(153, 153, 255)","rgb(204, 153, 255)","rgb(255, 153, 255)"],
 					["rgb(255, 102, 102)","rgb(255, 179, 102)","rgb(255, 255, 102)","rgb(102, 255, 102)","rgb(102, 255, 179)","rgb(102, 255, 255)","rgb(102, 179, 255)","rgb(102, 102, 255)","rgb(179, 102, 255)","rgb(255, 102, 255)"],
@@ -667,6 +673,18 @@ angular.module('mdColorPicker', [])
 					["rgb(92, 0, 0)","rgb(92, 46, 0)","rgb(92, 92, 0)","rgb(0, 92, 0)","rgb(0, 92, 46)","rgb(0, 92, 92)","rgb(0, 46, 92)","rgb(0, 0, 92)","rgb(46, 0, 92)","rgb(92, 0, 92)"],
 					["rgb(255, 255, 255)","rgb(205, 205, 205)","rgb(178, 178, 178)","rgb(153, 153, 153)","rgb(127, 127, 127)","rgb(102, 102, 102)","rgb(76, 76, 76)","rgb(51, 51, 51)","rgb(25, 25, 25)","rgb(0, 0, 0)"]
 				];
+
+                try{
+                    var customPalette = JSON.parse($scope.mdColorCustomPalette);
+                    $scope.palette = (Array.isArray(customPalette) && customPalette.length > 0) ? customPalette : defaultPalette;
+				}
+				catch(err){
+                	console.error("Error while parsing the custom palette: ", err);
+                	$scope.palette = defaultPalette;
+				}
+
+
+
 
 				$scope.materialPalette = $mdColorPalette;
 
@@ -882,6 +900,7 @@ angular.module('mdColorPicker', [])
 				options.mdColorHsl = options.mdColorHsl === undefined ? true : options.mdColorHsl;
 				options.mdColorHex = ((options.mdColorHex === undefined) || (!options.mdColorRgb && !options.mdColorHsl))  ? true : options.mdColorHex;
 				options.mdColorAlphaChannel = (!options.mdColorRgb && !options.mdColorHsl) ? false : options.mdColorAlphaChannel;
+                options.mdColorCustomPalette = options.mdColorCustomPalette === undefined ? true : options.mdColorCustomPalette;
 
                 dialog = $mdDialog.show({
 					templateUrl: 'mdColorPickerDialog.tpl.html',
@@ -905,6 +924,7 @@ angular.module('mdColorPicker', [])
 							$scope.value = options.value;
 							$scope.default = options.defaultValue;
 							$scope.random = options.random;
+							$scope.mdColorCustomPalette = options.mdColorCustomPalette;
 
 							$scope.mdColorAlphaChannel = options.mdColorAlphaChannel;
 							$scope.mdColorSpectrum = options.mdColorSpectrum;
