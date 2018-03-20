@@ -142,7 +142,7 @@ gulp.task('demo', ['demo-resources'], function () {
 gulp.task('server', ['build', 'demo', 'dist-resources'], function () {
 	livereload.listen({port: ports.livereload, basePath: "."});
 	http.createServer(
-		st({path: path.resolve(__dirname, 'dist'), index: 'demo/redirect.html', cache: false})
+		st({path: path.resolve(__dirname), index: 'index.html', cache: false})
 	).listen(ports.web);
 
 

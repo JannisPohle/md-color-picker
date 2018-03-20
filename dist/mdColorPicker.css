@@ -256,6 +256,9 @@ md-color-picker .md-color-picker-input-container .md-color-picker-clear,
   background-color: #1560d0;
   border-color: #1560d0;
 }
+.md-color-picker-container .md-color-picker-palette {
+  height: 25px;
+}
 .md-color-picker-container .md-color-picker-material-palette .md-color-picker-material-title {
   font-size: 22px;
   line-height: 75px;
